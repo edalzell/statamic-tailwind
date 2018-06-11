@@ -62,6 +62,7 @@ class InstallCommand extends Command
             [
                 'from' => ['js', 'webpack.mix.js'],
                 'to' => 'webpack.mix.js',
+                'update' => true
             ],
             [
                 'from' => ['css', 'base.css'],
@@ -77,7 +78,8 @@ class InstallCommand extends Command
             function ($file, $key) {
                 $this->putFile(
                     $file['from'],
-                    $file['to']
+                    $file['to'],
+                    array_get($file, 'update', false)
                 );
             }
         );
@@ -140,17 +142,24 @@ class InstallCommand extends Command
      * @param array $destSourcePathArr Relative to the theme dir
      * @return void
      */
-    private function putFile($sourcePathArr, $destPathArr)
+    private function putFile($sourcePathArr, $destPathArr, $update = false)
     {
         $assetsPath = Path::assemble('site', 'addons', 'Tailwind', 'resources', 'assets');
         $relativeSrcPath = Path::assemble(Helper::ensureArray($sourcePathArr));
+        $srcPath = Path::assemble($assetsPath, $relativeSrcPath);
 
         $relativeDestPath = Path::assemble(Helper::ensureArray($destPathArr));
+        $destPath = Path::assemble($this->themePath, $relativeDestPath);
 
-        File::copy(
-            Path::assemble($assetsPath, $relativeSrcPath),
-            Path::assemble($this->themePath, $relativeDestPath),
-            true
-        );
+        if (!$update) {
+            File::copy($srcPath, $destPath, true);
+        } else {
+            // replace `my-theme` with their actual theme
+            File::delete($destPath);
+            File::put(
+                $destPath,
+                str_replace('my-theme', Config::get('theming.theme'), File::get($srcPath))
+            );
+        }
     }
 }
