@@ -1,7 +1,9 @@
 # Requirements
 1. Statamic 2
 2. [Yarn](https://yarnpkg.com/)
-3. `theme` driver is `local`
+3. [Node](https://nodejs.org/en/)
+4. [Webpack](https://webpack.js.org/guides/installation/)
+5. `theme` driver is `local`
 
 # Install
 1. Copy files to `addons` folder
