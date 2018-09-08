@@ -2,13 +2,13 @@
 
 namespace Statamic\Addons\Tailwind\Commands;
 
-use Statamic\Extend\Command;
-use Statamic\API\Config;
-use Statamic\API\Path;
 use Statamic\API\File;
+use Statamic\API\Path;
+use Statamic\API\Config;
 use Statamic\API\Helper;
-use Symfony\Component\Process\ProcessBuilder;
+use Statamic\Extend\Command;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 class InstallCommand extends Command
 {
@@ -154,8 +154,9 @@ class InstallCommand extends Command
         if (!$update) {
             File::copy($srcPath, $destPath, true);
         } else {
-            // replace `my-theme` with their actual theme
-            File::delete($destPath);
+            if (File::exists($destPath)) {
+                File::delete($destPath);
+            }
             File::put(
                 $destPath,
                 str_replace('my-theme', Config::get('theming.theme'), File::get($srcPath))
