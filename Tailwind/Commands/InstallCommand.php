@@ -49,7 +49,10 @@ class InstallCommand extends Command
 
         $this->copyFiles();
 
-        $this->runCommands();
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
+            $this->runCommands();
+        else
+            $this->outputWindowsInstructions();
     }
 
     private function copyFiles()
@@ -162,5 +165,13 @@ class InstallCommand extends Command
                 str_replace('my-theme', Config::get('theming.theme'), File::get($srcPath))
             );
         }
+    }
+
+    private function outputWindowsInstructions()
+    {
+        $this->info('You are on a Windows system. Please do the follwing commands within your theme directory manually: ');
+        $this->info('    yarn install');
+        $this->info('Within node_modules/.bin:');
+        $this->info('    tailwind.cmd init ../../tailwind.js');
     }
 }

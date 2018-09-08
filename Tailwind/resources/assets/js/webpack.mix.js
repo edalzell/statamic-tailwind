@@ -14,6 +14,7 @@ mix.postCss('css/base.css', 'css/my-theme.css')
     ], 'js/my-theme.js');
 
 mix.disableSuccessNotifications();
+mix.setPublicPath('/');
 
 if (mix.inProduction()) {
     mix.purgeCss({
